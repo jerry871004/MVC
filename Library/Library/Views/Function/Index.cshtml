@@ -1,0 +1,105 @@
+﻿@model Library.Models.BookSearch
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>圖書維護</h2>
+
+@using (Html.BeginForm("Index", "Function", FormMethod.Post, new { id = "Search" }))
+{
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookClassId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BookClassId, (List<SelectListItem>)ViewBag.BookClass, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.KeeperId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.KeeperId, (List<SelectListItem>)ViewBag.borrowpeople, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookStatusId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.BookStatusId, (List<SelectListItem>)ViewBag.borrowstatus, "請選擇", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                <input type="submit" value="查詢" />
+                @Html.ActionLink("add", "InsertEmployee")
+                @Html.ActionLink("清除", "Index")
+            </div>
+        </div>
+
+
+        @if (ViewBag.SearchList != null)
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr id>
+                        <th>圖書類別</th>
+                        <th>書名</th>
+                        <th>購書日期</th>
+                        <th>借閱狀態</th>
+                        <th>借閱人</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<Library.Models.BOOK>)ViewBag.SearchList)
+                    {
+                        <tr id='@item.BookId'>
+                            <td>@item.BookClassName</td>
+                            <td>@item.BookName</td>
+                            <td>@item.BuyDate</td>
+                            <td>@item.BookStatus</td>
+                            <td>@item.Keeper</td>
+                            @*<td>@Html.ActionLink("修改", "UpdateEmployee", new { id = item.EmployeeId, @value = @item.EmployeeId })</td>*@
+                            @*<td>
+                                    <a class="btnDelete" href="#" onclick="test(this,'@item.EmployeeId');">刪除</a>
+                                    <input class="hidEmployeeId" type="hidden" value='@item.EmployeeId' />
+                                </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+}
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            $(".btnDelete").click(function (e) {
+                e.preventDefault();
+                var tr = $(this).closest('tr')
+                $.ajax({
+                    type: "POST",
+                    url: "/Employee/DeleteEmployee",
+                    data: "employeeId=" + $(this).next().val(),
+                    dataType: "json",
+                    success: function (response) {
+                        $(tr).remove();
+                    }, error: function (error) {
+                        alert("系統發生錯誤");
+                    }
+                });
+                return false;
+            });
+        });
+    </script>*@
