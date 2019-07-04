@@ -173,5 +173,49 @@ namespace Library.Models
             }
             return result;
         }
+
+        public void DeleteBook(int arg)
+        {
+            DataTable dt = new DataTable();
+            string sql = @"DELETE BOOK_DATA WHERE BOOK_ID = @BookId";
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BookId",(int)arg));
+                SqlDataAdapter sqlAdapter = new SqlDataAdapter(cmd);
+                sqlAdapter.Fill(dt);
+                conn.Close();
+            }
+        }
+
+        public bool InsertBookInfo(Models.BOOK arg)
+        {
+            if (arg.BookName == null || arg.Author == null || arg.Publisher == null || arg.Introduction == null || arg.BuyDate == null || arg.BookClassId == null)
+            {
+                return false;
+            }
+
+            DataTable dt = new DataTable();
+            string sql = @"INSERT INTO BOOK_DATA (BOOK_NAME, BOOK_AUTHOR, BOOK_PUBLISHER, BOOK_NOTE, BOOK_BOUGHT_DATE, BOOK_CLASS_ID, BOOK_STATUS)
+		                         VALUES (@BookName, @Author, @Publisher, @Introduction, CONVERT(DATETIME, @BuyDate), @BookClassId, 'A')";
+
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BookName", arg.BookName == null ? string.Empty : arg.BookName));
+                cmd.Parameters.Add(new SqlParameter("@Author", arg.Author == null ? string.Empty : arg.Author));
+                cmd.Parameters.Add(new SqlParameter("@Publisher", arg.Publisher == null ? string.Empty : arg.Publisher));
+                cmd.Parameters.Add(new SqlParameter("@Introduction", arg.Introduction == null ? string.Empty : arg.Introduction));
+                cmd.Parameters.Add(new SqlParameter("@BuyDate", arg.BuyDate == null ? string.Empty : arg.BuyDate));
+                cmd.Parameters.Add(new SqlParameter("@BookClassId", arg.BookClassId == null ? string.Empty : arg.BookClassId));
+                SqlDataAdapter sqlAdapter = new SqlDataAdapter(cmd);
+                sqlAdapter.Fill(dt);
+                conn.Close();
+            }
+
+            return true;
+        }
     }
 }
